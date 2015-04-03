@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+.clear {
+	clear: both;
+}
+
+html {
+	height: 100vh;
+	background-image: url(../fzm-corkboard.texture-01.jpg);
+}
+
+body {
+	background-image: url(../fzm-corkboard.texture-01.jpg);
+}
+
+@import 'directives/main';
+@import 'home/main';
+@import 'about/main';
+@import 'tutorial/main';
+@import 'task/main';

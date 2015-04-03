@@ -1,0 +1,26 @@
+<ul id="sidebar-menu" class="sidebar-nav">
+		<li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main-icon" class="glyphicon glyphicon-align-justify"></span></a></li>	
+	</ul>
+	<ul id="sidebar" class="sidebar-nav">
+		<li ng-click="showAddTeam()"><a>Add Team<span class="float-right">+</span></a></li>
+		<li ng-show="add"><input type="text" class="add" ng-model="newTeam" /><button class="btn btn-success btn-circle btn-xs btn-add" ng-click="addTeam(newTeam)">Add</button>
+		<li><a id="my-teams">My Teams</a></li>
+	</ul>
+	<ul id="sidebar" class="sidebar-nav">
+		<li ng-repeat='team in teams' ng-click="setCurrentTeam(team._id, $index)">
+			<a>{{team.title}}</a>
+			<ul id="sidebar" class="sidebar-nav" ng-show="currentTeamIndex == $index">
+				<li class="list-add" ng-click="showInputMember($index)"><a class='no-border'>Add Member<span class="float-right">+</span></a></li>
+				<li ng-show="teamIndex == $index">
+					<input type="email" class="add" ng-model="newMemberEmail" /><button class="btn btn-success btn-circle btn-xs btn-add" ng-click="addMember(newMemberEmail, $index, team)">Add</button>
+				</li>
+				<li class="list-add" ng-click="showRemoveMember($index)"><a class="no-border">Remove Member<span class="float-right">-</span></a></li>
+				<li class='list-add' ng-click="showInputTask($index)"><a class="no-border">Add Task<span class="float-right">+</span></a></li>
+				<li ng-show="taskIndex == $index">
+					<input type="text" class="add" ng-model="newTask" /><button class="btn btn-success btn-circle btn-xs btn-add" ng-click="addTask(team._id, $index, newTask)">Add</button>
+				</li>
+				<li class='list-member' ng-repeat="member in team.members">
+					{{member.email}}
+				</li>
+		</li>
+</ul>
