@@ -9,32 +9,39 @@ module.exports = function (server) {
     io = socketio(server);
 
     io.on('connection', function (socket) {
+    	var currRoom;
+    	socket.on('join', function (room) {
+    		if (currRoom) socket.leave(currRoom);
+    		currRoom = room;
+    		socket.join(room);
+    	});
+
 		socket.on('users', function (data) {
 			socket.emit('userAdded', data);
 		});
 		socket.on('newMember', function (data) {
-			socket.broadcast.emit('updateTeam', data);
+			socket.emit('updateTeam', data);
 		});
 		socket.on('newTask', function (data) {
-			socket.broadcast.emit('updateTasks', data);
+			socket.to(currRoom).emit('updateTasks', data);
 		});
 		socket.on('newSubTask', function (data) {
-			socket.broadcast.emit('updateSubTasks', data);
+			socket.to(currRoom).emit('updateSubTasks', data);
 		});
 		socket.on('assigned', function (data) {
-			socket.broadcast.emit('updateAssignment', data);
+			socket.to(currRoom).emit('updateAssignment', data);
 		});
 		socket.on('removeTask', function (data) {
-			socket.broadcast.emit('taskDeleted', data);
+			socket.to(currRoom).emit('taskDeleted', data);
 		});
 		socket.on('taskStatusChange', function (data) {
-			socket.broadcast.emit('updateStatus', data);
+			socket.to(currRoom).emit('updateStatus', data);
 		});
 		socket.on('subTaskStatusChange', function (data) {
-			socket.broadcast.emit('updateSubStatus', data);
+			socket.to(currRoom).emit('updateSubStatus', data);
 		});
 		socket.on('removeSubTask', function (data) {
-			socket.broadcast.emit('subTaskDeleted', data);
+			socket.to(currRoom).emit('subTaskDeleted', data);
 		});
     });
 

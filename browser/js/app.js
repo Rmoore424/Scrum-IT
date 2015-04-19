@@ -1,8 +1,8 @@
 'use strict';
 var app = angular.module('FullstackGeneratedApp', ['ui.router', 'fsaPreBuilt', 'ngCookies']);
 
-app.controller('MainController', function ($scope, $state, AuthService, UserStatusFactory) {
-    $scope.userStatus = UserStatusFactory;    
+app.controller('MainController', function ($scope, $state, AuthService, UserStatus) {
+    $scope.userStatus = UserStatus;    
 });
 
 

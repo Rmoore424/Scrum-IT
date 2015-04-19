@@ -1,5 +1,5 @@
 'use strict';
-app.factory('UserStatusFactory', function () {
+app.factory('UserStatus', function () {
 	return {
 		isLoggedIn: false,
 	}

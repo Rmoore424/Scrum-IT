@@ -1,17 +1,17 @@
 'use strict';
-app.factory("TaskFactory", function ($http) {
+app.factory("Task", function ($http) {
 	return {
-		createTask: function (teamId, newTask) {
+		create: function (teamId, newTask) {
 			return $http.post("/api/task", {teamId: teamId,  task: {title: newTask}}).then(function (response) {
 				return response.data;
 			});
 		}, 
-		getTask: function (taskId) {
+		getOne: function (taskId) {
 			return $http.get("/api/task" +taskId).then(function (response) {
 				return response.data;
 			});
 		},
-		getTasks: function() {
+		getAll: function() {
 			return $http.get('/api/task').then(function (response) {
 				return response.data;
 			});
@@ -26,7 +26,7 @@ app.factory("TaskFactory", function ($http) {
 				return response.data;
 			});
 		},
-		deleteTask: function (taskId) {
+		deleteOne: function (taskId) {
 			return $http.delete('/api/task/' +taskId).then(function (response) {
 				return response.data;
 			});

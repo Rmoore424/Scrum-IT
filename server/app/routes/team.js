@@ -17,7 +17,6 @@ router.put('/', function (req, res, next) {
 	TeamModel.findOneAndUpdate({_id: req.body.teamId}, {$push: {members: req.body.userId} })
 		.populate('members')
 		.exec(function (err, team) {
-			console.log(team);
 			if (err) next(err);			
 			res.send(team);
 		});
@@ -51,7 +50,6 @@ router.get("/:teamId", function (req, res, next) {
 		 	.populate('subTasks')
 		 	.populate('assigned')
 		 		.exec(function (err, tasks) {
-		 			console.log(tasks);
 		 			if (err) next(err);
 		 			res.send({team: team, tasks: tasks});			
 		 		});

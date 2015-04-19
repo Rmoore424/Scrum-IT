@@ -7,7 +7,7 @@ app.config(function ($stateProvider) {
 	});
 });
 
-app.controller('HomeCtrl', function ($scope, $state, $cookieStore, UserFactory, TeamFactory, SubTaskFactory, TaskFactory, PageFactory, socket) {
+app.controller('HomeCtrl', function ($scope, $state, $cookieStore, User, Team, SubTask, Task, Page, socket) {
 
 	socket.on('updateTeam', function (data) {
 		var teamExists = false;
@@ -23,24 +23,24 @@ app.controller('HomeCtrl', function ($scope, $state, $cookieStore, UserFactory, 
 	});
 	socket.on('updateTasks', function (data) {
 		if ($scope.currentTeamIndex == data.index) {
-			PageFactory.team.assignments.push(data.task);
+			Page.team.assignments.push(data.task);
 		}	
 	});
 
 	$scope.userId = $cookieStore.get('user');
-	UserFactory.getUsers().then(function (users) {
-		$scope.users = users;
-		TeamFactory.getUserTeams($scope.userId).then(function (teams) {
+	// UserFactory.getUsers().then(function (users) {
+	// 	$scope.users = users;
+		Team.getUserTeams($scope.userId).then(function (teams) {
 			$scope.teams = teams;
 		});
-	});
+	// });
 
-	$scope.showInputMember = function (index) {
+	$scope.showAddMember = function (index) {
 		$scope.teamIndex = index;
 		$scope.taskIndex = -1;
 	};
 
-	$scope.showInputTask = function (index) {
+	$scope.showAddTask = function (index) {
 		$scope.taskIndex = index;
 		$scope.teamIndex = -1;
 	}
@@ -52,8 +52,8 @@ app.controller('HomeCtrl', function ($scope, $state, $cookieStore, UserFactory, 
 	$scope.addTeam = function (newTeam) {
 		$scope.add = false;
 		$scope.newTeam = "";
-		TeamFactory.createTeam(newTeam).then(function (team) {
-			TeamFactory.addToTeam(team._id, $scope.userId).then(function (populatedTeam) {
+		Team.create(newTeam).then(function (team) {
+			Team.addMember(team._id, $scope.userId).then(function (populatedTeam) {
 				$scope.teams.push(populatedTeam);
 			});
 		});
@@ -61,20 +61,20 @@ app.controller('HomeCtrl', function ($scope, $state, $cookieStore, UserFactory, 
 
 	$scope.addMember = function (email, index, team) {
 		$scope.teamIndex = -1;
-		$scope.newMemberEmail = "";
-		UserFactory.getUser(email).then(function (user) {
+		$scope.newMember = {};
+		User.getOne(email).then(function (user) {
 			$scope.teams[index].members.push(user);
-			PageFactory.team.members.push(user);
+			Page.team.members.push(user);
 			socket.emit('newMember', {user: user, team: team});
-			TeamFactory.addToTeam(team._id, user._id);
+			Team.addMember(team._id, user._id);
 		});
 	}
 	$scope.addTask = function (teamId, index, newTask) {
 		$scope.taskIndex = -1;
 		$scope.newAddedTask = "";
-		TaskFactory.createTask(teamId, newTask).then(function (task) {
+		Task.create(teamId, newTask).then(function (task) {
 			$scope.teams[index].assignments.push(task);
-			PageFactory.team.assignments.push(task);
+			Page.team.assignments.push(task);
 			socket.emit('newTask', {task: task, index: index});
 		});
 	}
@@ -82,9 +82,9 @@ app.controller('HomeCtrl', function ($scope, $state, $cookieStore, UserFactory, 
 	$scope.setCurrentTeam = function (teamId, index) {
 		$scope.currentTeamIndex = index;
 		$state.go('home.page', {id: teamId});
-		// TeamFactory.getTeam(teamId).then(function (responseObj) {
-		// 	$scope.teams[index].assignments = responseObj.tasks;
-		// });
 	}
 
+	$scope.resetForm = function (form) {
+		form = {};
+	}
 });

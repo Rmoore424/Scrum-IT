@@ -1,17 +1,17 @@
 "use strict";
-app.factory('UserFactory', function ($http) {
+app.factory('User', function ($http) {
 	return {
-		createUser: function (user) {
+		create: function (user) {
 			return $http.post('/api/user', user).then(function (response) {
 				return response.data;
 			});
 		},
-		getUsers: function () {
+		getAll: function () {
 			return $http.get('/api/user').then(function (response) {
 				return response.data;
 			});
 		},
-		getUser: function (email) {
+		getOne: function (email) {
 			return $http.get('api/user/' +email).then(function (response) {
 				return response.data;
 			});
