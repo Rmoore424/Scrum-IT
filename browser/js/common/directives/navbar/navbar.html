@@ -3,24 +3,8 @@
         <div class="navbar-header">
             <p class="Three-Dee" ng-click="goHome()">Scrum-IT</p>
         </div>
-<!--         <ul class="nav navbar-nav">
-            <li ng-repeat="item in menuItems">
-                <a ui-sref-active="active" ui-sref="{{ item.state }}">{{ item.label }}</a>
-            </li>
-        </ul> -->
+
         <guestnav ng-show="!userStatus.isLoggedIn"></guestnav>
         <usernav ng-show="userStatus.isLoggedIn"></usernav>
     </div>
-<!--     <div class="container">
-        <ul class="nav navbar-nav navbar-right" ng-show="add == 'Add Task'">
-            <li><label>{{add}}</label><input type="text" ng-model='newTask' />
-                <button ng-click="addNewTask(newTask)">Add</button>
-            </li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right" ng-show="add == 'Add Team'">
-            <li><label>{{add}}</label><input type="text" ng-model='newTeam' />
-                <button ng-click="addNewTeam(newTeam)">Add</button>
-            </li>
-        </ul>
-    </div> -->
 </nav>

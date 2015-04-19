@@ -1,5 +1,5 @@
 'use strict';
-app.factory("PageFactory", function () {
+app.factory("Page", function () {
 	return {
 		team: []
 	}

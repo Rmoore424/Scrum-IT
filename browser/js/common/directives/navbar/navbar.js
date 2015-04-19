@@ -7,9 +7,9 @@ app.directive('navbar', function () {
     };
 });
 
-app.controller('NavCtrl', function ($scope, $state, $cookieStore, AuthService, UserStatusFactory, TeamFactory, TaskFactory) {
+app.controller('NavCtrl', function ($scope, $state, $cookieStore, AuthService, UserStatus, Team, Task) {
 
-	   $scope.menuItems = [
+	$scope.menuItems = [
         { label: 'Home', state: 'home' },
     ];
 
@@ -25,30 +25,9 @@ app.controller('NavCtrl', function ($scope, $state, $cookieStore, AuthService, U
 
     $scope.logOut = function () {
             AuthService.logout();
-            UserStatusFactory.isLoggedIn = false;
+            UserStatus.isLoggedIn = false;
             $cookieStore.remove('user');
             $state.go('login');
-    }
-
-    $scope.toAdd = function (option) {
-        $scope.add = option;
-    }
-
-    $scope.addNewTeam = function (newTeam) {
-        var user = $cookieStore.get('user');
-        console.log(user);
-        TeamFactory.createTeam(newTeam, user).then(function (team) {
-            console.log(team);
-            $scope.add = false;
-        });
-    }
-
-    $scope.addNewTask = function (newTask) {
-        var user = $cookieStore.get('user');
-        TaskFactory.createTask(newTask, user).then(function (task) {
-            console.log(task);
-            $scope.add = false;
-        });
     }
 
     $scope.goHome = function () {

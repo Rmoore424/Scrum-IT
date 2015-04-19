@@ -9,11 +9,11 @@ app.config(function ($stateProvider) {
 
 });
 
-app.controller('LoginCtrl', function ($scope, $state, AuthService, $cookieStore, UserStatusFactory) {
+app.controller('LoginCtrl', function ($scope, $state, AuthService, $cookieStore, UserStatus) {
 	$scope.loginUser = function (user) {
         AuthService.login(user).then(function (returnedUser) {
             if (returnedUser.email) {
-                UserStatusFactory.isLoggedIn = true;
+                UserStatus.isLoggedIn = true;
                     $cookieStore.put('user', returnedUser._id);
                     $state.go('home');
             }
