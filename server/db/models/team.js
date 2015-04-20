@@ -9,7 +9,7 @@ var schema = new mongoose.Schema({
 		[{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
 	//rename tasks
 	assignments:
-		[{type: mongoose.Schema.Types.ObjectId, ref: "Task"}],
+		[{type: mongoose.Schema.Types.ObjectId, ref: "Task", default: []}],
 	manager: {
 		type: mongoose.Schema.Types.ObjectId, ref: "User"
 	}

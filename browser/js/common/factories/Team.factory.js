@@ -16,7 +16,7 @@ app.factory("Team", function ($http) {
 				return response.data;
 			});
 		},
-		get: function (teamId) {
+		getOne: function (teamId) {
 			return $http.get("/api/team/" +teamId).then(function (response) {
 				return response.data;
 			});

@@ -36,9 +36,8 @@ router.get("/", function (req, res, next) {
 });
 
 router.put('/', function (req, res, next) {
-	TaskModel.findOneAndUpdate({_id: req.body.taskId}, {$set: {assigned: req.body.userId, status: req.body.status}})
+	TaskModel.findOneAndUpdate({_id: req.body.taskId}, {$set: {assigned: req.body.email, status: req.body.status}})
 		.populate('subTasks')
-		.populate('assigned')
 		.exec(function (err, task) {
 			if (err) next(err);
 			res.send(task);

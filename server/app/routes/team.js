@@ -48,7 +48,6 @@ router.get("/:teamId", function (req, res, next) {
 		var tasks = team.assignments;
 		TaskModel.find({_id: {$in: tasks}})
 		 	.populate('subTasks')
-		 	.populate('assigned')
 		 		.exec(function (err, tasks) {
 		 			if (err) next(err);
 		 			res.send({team: team, tasks: tasks});			

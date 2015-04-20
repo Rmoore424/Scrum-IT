@@ -8,58 +8,81 @@ app.directive('task', function () {
 });
 
 app.controller("TaskController", function ($scope, $cookieStore, socket, Page, SubTask, Task, Team, User) {
+	
+	socket.on('addSub', function (data) {
+		Page.team.assignments[data.taskIndex].subTasks.push(data.subTask);
+	});
+
+	socket.on("deleteSub", function (data) {
+		Page.team.assignments[data.taskIndex].subTasks.splice(data.subIndex, 1);
+	});
+
+	socket.on('assignToTask', function (data) {
+		Page.team.assignments[data.taskIndex].assigned = data.assigned;
+		Page.team.assignments[data.taskIndex].status = data.status;
+
+	});
+
+	socket.on('updateStatus', function (data) {
+		Page.team.assignments[data.taskIndex].status = data.status;
+	});
+
+	socket.on('updateSubStatus', function (data) {
+		Page.team.assignments[data.taskIndex].subTasks[data.subIndex].status = data.newStatus;
+	})
+
+	$scope.removeTask = function (taskId, index) {
+		Page.team.assignments.splice(index, 1);
+		socket.emit("removeTask", index);
+		Task.deleteOne(taskId);
+	}
 
 	$scope.showSubTask = function (index) {
 		$scope.subTaskIndex = index;
 	}
 
-	$scope.addSubTask = function (task, index, newTask) {
+	$scope.addSubTask = function (taskId, newTask, taskIndex) {
 		$scope.subTaskIndex = -1;
 		$scope.newSubTask = "";
-		SubTask.create(task._id, newTask).then(function (subtask) {
-			Page.team.assignments[index].subTasks.push(subtask);
-			socket.emit('newSubTask', {subtask: subtask, index: index, taskId: task._id});
+		SubTask.create(taskId, newTask).then(function (subTask) {
+			Page.team.assignments[taskIndex].subTasks.push(subTask);
+			socket.emit('newSub', {subTask: subTask, taskIndex: taskIndex});
 		});
 	}
 
-	$scope.assignToTask = function (email, index, taskId) {
-		User.getOne(email).then(function (user) {
-			var userId = user._id;
-			if (email == "Unassigned") {
-				var newStatus = "Pending";
-			}
-			else {
-				var newStatus = "In Progress";
-			}
-			Page.team.assignments[index].status = newStatus;
-			Page.team.assignments[index].assigned = user;
-			Task.assign(userId, taskId, newStatus).then(function (task) {
-				socket.emit('assigned', {task: task, index: index})
-			});
-		});
-	}
-
-	$scope.changeStatus = function (taskId, newStatus) {
-		$scope.assignment.status = newStatus;
-		socket.emit('taskStatusChange', {taskId: taskId, newStatus: newStatus});
-		Task.updateStatus(taskId, newStatus);
-	}
-	$scope.changeSubTaskStatus = function (subtask, index, taskId, newStatus) {
-		$scope.assignment.subTasks[index].status = newStatus;
-		socket.emit('subTaskStatusChange', {subTaskId: subtask._id, taskId: taskId, newStatus: newStatus});
-		SubTask.updateStatus(subtask._id, newStatus);
-	}
-	$scope.removeTask = function (taskId, index) {
-		Page.team.assignments.splice(index, 1);
-		socket.emit("removeTask", {taskId: taskId});
-		Task.deleteOne(taskId);
-	}
-
-	$scope.removeSubTask = function (subtaskId, taskId, index) {
-		$scope.assignment.subTasks.splice(index, 1);
-		socket.emit('removeSubTask', {subTaskId: subtaskId, taskId: taskId})
+	$scope.removeSubTask = function (subtaskId, taskId, subIndex, taskIndex) {
+		$scope.assignment.subTasks.splice(subIndex, 1);
+		socket.emit('removeSub', {subIndex: subIndex, taskIndex: taskIndex});
 		SubTask.deleteOne(subtaskId).then(function (subtask) {
 			Task.removeSubTask(taskId, subtaskId);
 		});
 	}
+
+	$scope.assignToTask = function (assigned, taskIndex, taskId) {
+		if (assigned == "Unassigned") {
+			var newStatus = "Pending";
+			assigned = '';
+		}
+		else {
+			var newStatus = "In Progress";
+		}
+		$scope.assignment.status = newStatus;
+		$scope.assignment.assigned = assigned;
+		Task.assign(assigned, taskId, newStatus).then(function (task) {
+			socket.emit('assigned', {assigned: task.assigned, status: task.status, taskIndex: taskIndex})
+		});
+	}
+
+	$scope.changeStatus = function (taskId, taskIndex, newStatus) {
+		$scope.assignment.status = newStatus;
+		socket.emit('taskStatusChange', {taskIndex: taskIndex, newStatus: newStatus});
+		Task.updateStatus(taskId, newStatus);
+	}
+	
+	$scope.changeSubTaskStatus = function (subTaskId, subIndex, taskIndex, newStatus) {
+		$scope.assignment.subTasks[subIndex].status = newStatus;
+		socket.emit('subTaskStatusChange', {subIndex: subIndex, taskIndex: taskIndex, newStatus: newStatus});
+		SubTask.updateStatus(subTaskId, newStatus);
+	}
+
 });

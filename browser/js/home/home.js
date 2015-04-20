@@ -12,12 +12,12 @@ app.controller('HomeCtrl', function ($scope, $state, $cookieStore, User, Team, S
 	socket.on('updateTeam', function (data) {
 		var teamExists = false;
 		for (var i = 0; i < $scope.teams.length; i++) {
-			if ($scope.teams[i]._id == data.team._id) {
+			if ($scope.teams[i]._id === data.team._id) {
 				$scope.teams[i].members.push(data.user);
 				teamExists = true;
 			}
 		}
-		if (teamExists == false && data.user._id == $scope.userId) {
+		if (teamExists === false && data.user._id === $scope.userId) {
 			$scope.teams.push(data.team);
 		}
 	});
@@ -28,12 +28,9 @@ app.controller('HomeCtrl', function ($scope, $state, $cookieStore, User, Team, S
 	});
 
 	$scope.userId = $cookieStore.get('user');
-	// UserFactory.getUsers().then(function (users) {
-	// 	$scope.users = users;
 		Team.getUserTeams($scope.userId).then(function (teams) {
 			$scope.teams = teams;
 		});
-	// });
 
 	$scope.showAddMember = function (index) {
 		$scope.teamIndex = index;
@@ -71,20 +68,15 @@ app.controller('HomeCtrl', function ($scope, $state, $cookieStore, User, Team, S
 	}
 	$scope.addTask = function (teamId, index, newTask) {
 		$scope.taskIndex = -1;
-		$scope.newAddedTask = "";
+		$scope.newTask = "";
 		Task.create(teamId, newTask).then(function (task) {
-			$scope.teams[index].assignments.push(task);
 			Page.team.assignments.push(task);
-			socket.emit('newTask', {task: task, index: index});
+			socket.emit('newTask', task);
 		});
 	}
 
 	$scope.setCurrentTeam = function (teamId, index) {
 		$scope.currentTeamIndex = index;
 		$state.go('home.page', {id: teamId});
-	}
-
-	$scope.resetForm = function (form) {
-		form = {};
 	}
 });
