@@ -16,8 +16,8 @@ app.factory("Task", function ($http) {
 				return response.data;
 			});
 		},
-		assign: function (userId, taskId, status) {
-			return $http.put('/api/task', {userId: userId, taskId: taskId, status: status}).then(function (response) {
+		assign: function (email, taskId, status) {
+			return $http.put('/api/task', {email: email, taskId: taskId, status: status}).then(function (response) {
 				return response.data;
 			});
 		},

@@ -2,9 +2,9 @@
 	<div class ="panel-heading panel-task-heading" ng-class="{assigned: assignment.status == 'In Progress', done: assignment.status == 'Done', help: assignment.status == 'Need Help'}">
 		<h3 class="panel-title Three-Dee-Header">{{assignment.title}}
 			<span class='status-btns'>
-				<button class="btn btn-success btn-circle btn-xs" ng-click="changeStatus(assignment._id, 'Done')"><i class="glyphicon glyphicon-thumbs-up"></i></button>
+				<button class="btn btn-success btn-circle btn-xs" ng-click="changeStatus(assignment._id, outerIndex, 'Done')"><i class="glyphicon glyphicon-thumbs-up"></i></button>
 				<button class="btn btn-warning btn-circle btn-xs"><i class="glyphicon glyphicon-alert" ng-click="changeStatus(assignment._id, 'Need Help')"></i></button>
-				<button class="btn btn-danger btn-circle btn-xs"ng-click="removeTask(assignment._id, $index)">X</button>
+				<button class="btn btn-danger btn-circle btn-xs"ng-click="removeTask(assignment._id, outerIndex)">X</button>
 			</span>
 		</h3>
 	</div>
@@ -12,9 +12,9 @@
 		<ul class="sidebar sidebar-nav text-center" ng-class="{assigned: assignment.status == 'In Progress', done: assignment.status == 'Done', help: assignment.status == 'Need Help'}">
 			<li>
 				<p>
-					Assigned To: {{assignment.assigned.email}}
+					Assigned To: {{assignment.assigned}}
 				</p>
-					<select ng-model="assigned.email" ng-change="assignToTask(assigned.email, $index, assignment._id)">
+					<select ng-model="assigned" ng-change="assignToTask(assigned, outerIndex, assignment._id)">
 						<option>Unassigned</option>
 						<option ng-repeat="member in page.team.members">
 							{{member.email}}
@@ -24,19 +24,19 @@
 			</li>
 		</ul>
 		<ul class='sidebar sidebar-nav' ng-class="{assigned: assignment.status == 'In Progress', done: assignment.status == 'Done', help: assignment.status == 'Need Help'}">
-			<li class="list-add text-center list-add-subtask" ng-click="showSubTask($index)">Add Subtask</li>
-			<li ng-show="subTaskIndex == $index" class="text-center">
+			<li class="list-add text-center list-add-subtask" ng-click="showSubTask(outerIndex)">Add Subtask</li>
+			<li ng-show="subTaskIndex == outerIndex" class="text-center">
 				<input type="text" class="add" ng-model="newSubTask" />
-				<button class="btn btn-success btn-circle btn-xs btn-add" ng-click="addSubTask(assignment, $index, newSubTask)">Add</button>
+				<button class="btn btn-success btn-circle btn-xs btn-add" ng-click="addSubTask(assignment._id, newSubTask, outerIndex)">Add</button>
 			</li>
 		</ul>
 		<ul class='sidebar sidebar-nav'>
-			<li class="list-subtask" ng-repeat="subtask in assignment.subTasks" ng-class="{assigned: assignment.status == 'In Progress', done: subtask.status == 'Done', help: subtask.status == 'Need Help'}">
+			<li class="list-subtask" ng-repeat="subtask in assignment.subTasks" ng-init="innerIndex = $index" ng-class="{assigned: assignment.status == 'In Progress', done: subtask.status == 'Done', help: subtask.status == 'Need Help'}">
 				{{subtask.title}}
 				<span class='status-btns'>
-					<button class="btn btn-success btn-circle btn-xs" ng-click="changeSubTaskStatus(subtask, $index, assignment._id, 'Done')"><i class="glyphicon glyphicon-thumbs-up"></i></button>
-					<button class="btn btn-warning btn-circle btn-xs"><i class="glyphicon glyphicon-alert" ng-click="changeSubTaskStatus(subtask, $index, assignment._id, 'Need Help')"></i></button>
-					<button class="btn btn-danger btn-circle btn-xs" ng-click="removeSubTask(subtask._id, assignment._id, $index)">X</button>
+					<button class="btn btn-success btn-circle btn-xs" ng-click="changeSubTaskStatus(subtask._id, innerIndex, outerIndex, 'Done')"><i class="glyphicon glyphicon-thumbs-up"></i></button>
+					<button class="btn btn-warning btn-circle btn-xs"><i class="glyphicon glyphicon-alert" ng-click="changeSubTaskStatus(subtask._id, innerIndex, outerIndex, 'Need Help')"></i></button>
+					<button class="btn btn-danger btn-circle btn-xs" ng-click="removeSubTask(subtask._id, assignment._id, innerIndex, outerIndex)">X</button>
 				</span>
 			</li>
 		</ul>

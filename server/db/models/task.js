@@ -11,7 +11,7 @@ var schema = new mongoose.Schema({
 	subTasks: 
 		[{type: mongoose.Schema.Types.ObjectId, ref: "SubTask"}],
 	assigned: {
-		type: mongoose.Schema.Types.ObjectId, ref: "User"
+		type: String
 	},
 	status: {
 		type: String, default: "Pending"
