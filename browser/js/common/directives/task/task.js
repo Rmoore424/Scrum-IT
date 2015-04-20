@@ -45,7 +45,7 @@ app.controller("TaskController", function ($scope, $cookieStore, socket, Page, S
 		$scope.subTaskIndex = -1;
 		$scope.newSubTask = "";
 		SubTask.create(taskId, newTask).then(function (subTask) {
-			Page.team.assignments[taskIndex].subTasks.push(subTask);
+			$scope.assignment.subTasks.push(subTask);
 			socket.emit('newSub', {subTask: subTask, taskIndex: taskIndex});
 		});
 	}
